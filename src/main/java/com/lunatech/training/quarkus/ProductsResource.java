@@ -1,5 +1,8 @@
 package com.lunatech.training.quarkus;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 
@@ -9,29 +12,37 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
+
 
 @Path("/")
-@Produces(MediaType.TEXT_PLAIN)
+@Produces(MediaType.APPLICATION_JSON)
 public class ProductsResource {
 
-    @Inject
+  /*  @Inject
     Template catalogue;
 
     @Inject
-    Template details;
+    Template details;*/
 
     @GET
     @Path("/products")
-    public TemplateInstance products(){
-        return catalogue.instance();
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PanacheEntity> products(){
+
+      /*  List<Product> list = Product.findAll().list();
+        list.stream().forEach(System.out::println);*/
+        return Product.findAll().list();
+       // return catalogue.instance();
     }
 
     @GET
     @Path("/products/{id}")
-    public TemplateInstance getProductsById(@PathParam("id") String id){
-        details.data(id, Product.class);
-        return details.instance();
+    @Produces(MediaType.APPLICATION_JSON)
+    public PanacheEntity getProductsById(@PathParam("id") String id){
+
+        PanacheEntity byId = Product.findById(id);
+        System.out.println(byId);
+        return byId;
     }
-
-
 }

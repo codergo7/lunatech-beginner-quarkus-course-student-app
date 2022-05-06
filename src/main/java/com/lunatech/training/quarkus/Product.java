@@ -1,17 +1,39 @@
 package com.lunatech.training.quarkus;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+
+import javax.persistence.Entity;
 import java.math.BigDecimal;
+import java.util.List;
 
-public class Product{
-        public final Long id;
-        public final String name;
-        public final String description;
-        public final BigDecimal price;
+@Entity
+public class Product extends PanacheEntity {
+        private String name;
+        private String description;
+        private BigDecimal price;
 
-        public Product(Long id, String name, String description, BigDecimal price) {
-                this.id = id;
-                this.name = name;
-                this.description = description;
-                this.price = price;
+        public Product() {
+        }
+
+        public static Product findByName(String name){
+                return find("name", name).firstResult();
+        }
+
+        public static List<Product> findExpensive(){
+                return list("price < ?1", new BigDecimal(100));
+        }
+
+        public static void deleteChairs(){
+                delete("name","Chair");
+        }
+
+        @Override
+        public String toString() {
+                return "Product{ id=" + id +
+                        " name='" + name + '\'' +
+                        ", description='" + description + '\'' +
+                        ", price=" + price +
+                        '}';
         }
 }
