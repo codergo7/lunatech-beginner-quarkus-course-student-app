@@ -3,10 +3,8 @@ package com.lunatech.training.quarkus;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.shaded.okhttp3.MediaType;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 class ProductsResourceTest {
