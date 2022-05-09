@@ -1,6 +1,6 @@
 package com.lunatech.training.quarkus;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Entity;
@@ -23,14 +23,14 @@ public class Product extends PanacheEntity {
         public Product() {
         }
 
-        public static Product findByName(String name){
+       /* public static Product findByName(String name){
                 return find("name", name).firstResult();
         }
 
         public static List<Product> findExpensive(){
                 return list("price < ?1", new BigDecimal(100));
         }
-
+*/
         public static void deleteChairs(){
                 delete("name","Chair");
         }

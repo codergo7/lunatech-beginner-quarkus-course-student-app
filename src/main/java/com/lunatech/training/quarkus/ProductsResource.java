@@ -1,15 +1,13 @@
 package com.lunatech.training.quarkus;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.smallrye.mutiny.Uni;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.Optional;
 
 
 @Path("/products")
@@ -19,7 +17,7 @@ public class ProductsResource {
     @GET
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Product> products(){
+    public Uni<List<Product>> products(){
 
         return Product.findAll().list();
     }
@@ -27,7 +25,7 @@ public class ProductsResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Product getProductsById(@PathParam("id") Long id){
+    public Uni<Product> getProductsById(@PathParam("id") Long id){
 
         return Product.findById(id);
     }
@@ -37,22 +35,19 @@ public class ProductsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response updateProduct(@PathParam("id") Long id, @Valid Product product){
+    public Uni<Product> updateProduct(@PathParam("id") Long id, @Valid Product product){
 
-        Optional<Product> byId = Product.findByIdOptional(id);
-        if(byId.isEmpty()){
-            throw new EntityNotFoundException("Product not found.");
-        }
-        Product entityBase = Product.findById(id);
+        //Uni<Product> productUni = Product.findById(id);
 
-        if(entityBase == null){
-            throw new EntityNotFoundException("Product not found.");
-        }
-        entityBase.name = product.name;
-        entityBase.description = product.description;
-        entityBase.price = product.price;
-        //Product.persist(entityBase);
 
-        return Response.accepted().entity(entityBase).build();
+        return Product.<Product>findById(id).flatMap(productUpdate ->{
+            if(productUpdate == null){
+                return Uni.createFrom().failure(new EntityNotFoundException(String.format("Product by id= {} not found",id)));
+            }
+            productUpdate.name = product.name;
+            productUpdate.description = product.description;
+            productUpdate.price = product.price;
+            return productUpdate.persistAndFlush().map(__ -> productUpdate);
+        } );
     }
 }
