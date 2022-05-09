@@ -136,7 +136,7 @@ The following three steps are only useful if you wrote the tests for these endpo
 
 * Extra: Update the tests for the list and details endpoint and make them check for the right content-type.
 * Extra: Update the test for the details endpoint, and use the Json-path expression `name` to test that the value for the url `/products/1` equals "Chair".
-* Extra extra: Change the test to be independent from the database that's started manually, by making use of the Testcontainers project.
+* $$$$$$ Extra extra: Change the test to be independent from the database that's started manually, by making use of the Testcontainers project.
 
 
 ## Exercise 7b: Add OpenAPI support and Swagger UI
