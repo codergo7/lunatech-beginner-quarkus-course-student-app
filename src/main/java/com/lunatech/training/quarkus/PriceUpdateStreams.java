@@ -13,7 +13,7 @@ public class PriceUpdateStreams {
     private final Random random = new Random();
     private final BigDecimal MIN_PRICE = new BigDecimal(30);
 
-    @Outgoing("raw-price-updates")
+    @Outgoing("raw-price-updates-out")
     public Multi<PriceUpdate> generate() {
 
         return Multi.createFrom()
@@ -32,12 +32,12 @@ public class PriceUpdateStreams {
     }*/
 
 
-    @Incoming("raw-price-updates")
-    @Outgoing("price-updates")
+    @Incoming("raw-price-updates-in")
+    @Outgoing("price-updates-out")
     public PriceUpdate process(PriceUpdate priceUpdate){
 
         if(priceUpdate.price.compareTo(MIN_PRICE)<0){
-
+            throw new RuntimeException("Invalid price");
         }
 
         return priceUpdate;

@@ -6,13 +6,14 @@ import org.jboss.resteasy.reactive.RestSseElementType;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/prices")
 public class PriceUpdatesResource {
 
-    @Channel("price-updates")
+    @Channel("price-updates-in")
     Multi<PriceUpdate> priceUpdates;
 
     @GET
@@ -20,5 +21,13 @@ public class PriceUpdatesResource {
     @RestSseElementType(MediaType.APPLICATION_JSON)
     public Multi<PriceUpdate> prices() {
         return priceUpdates;
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    @RestSseElementType(MediaType.APPLICATION_JSON)
+    public Multi<PriceUpdate> productById(@PathParam("id") Long id) {
+        return priceUpdates.filter(priceUpdate -> priceUpdate.productId.equals(id));
     }
 }
